@@ -67,12 +67,12 @@ void main(int argc, char **argv)
     struct timeval startbcast, finishbcast;
     struct timeval startgather, finishgather;
 
+    init_matrices();
+
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &taskid);
     MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
-
-    if (taskid == 0)
-        init_matrices();
+    MPI_Barrier(MPI_COMM_WORLD);
 
     count = N * N / numtasks;
 
