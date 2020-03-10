@@ -9,6 +9,7 @@
 #define N 1024
 
 double a[N][N], b[N][N], c[N][N];
+double atemp[N][N], ctemp[N][N];
 
 void init_matrices()
 {
@@ -75,8 +76,6 @@ void main(int argc, char **argv)
     MPI_Barrier(MPI_COMM_WORLD);
 
     count = N * N / numtasks;
-
-    double atemp[N / numtasks][N], ctemp[N / numtasks][N];
 
     gettimeofday(&startjob, 0);
 
