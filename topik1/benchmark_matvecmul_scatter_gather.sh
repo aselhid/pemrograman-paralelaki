@@ -10,7 +10,7 @@ for i in "${procs[@]}"
 do
     for j in {1..5}
     do
-        mpirun --hostfile $(pwd)/../hostfile -np "$(($i + 1))" $(pwd)/mvmsg
+        mpirun --hostfile $(pwd)/../hostfile -np "$i" $(pwd)/mvmsg
     done
 done
 echo ""
