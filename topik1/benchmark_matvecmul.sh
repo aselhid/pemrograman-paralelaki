@@ -2,10 +2,10 @@
 
 procs=(2 4 8 16 32)
 
-mpicc -o mvm matrix_multiplication.c
+mpicc -o mvm matrix_vector_multiplication.c
 chmod +x mvm
 
-echo "np,N,valid,job_time,fanout_time,fanin_time,"
+echo "np,N,M,valid,job_time,fanout_time,fanin_time,"
 for i in "${procs[@]}"
 do
     for j in {1..5}

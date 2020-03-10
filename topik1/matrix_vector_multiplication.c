@@ -85,7 +85,7 @@ main(int argc, char **argv)
             }
         }
 
-        printf("%d,%d,", numtasks, N);
+        printf("%d,%d,%d,", numtasks, N, M);
         printf(valid ? "VALID," : "NOT,");
         printf("%.6f,", (finishjob.tv_sec + finishjob.tv_usec * 1e-6) - (startjob.tv_sec + startjob.tv_usec * 1e-6));
         printf("%.6f,", (finishcomm.tv_sec + finishcomm.tv_usec * 1e-6) - (startcomm.tv_sec + startcomm.tv_usec * 1e-6));
