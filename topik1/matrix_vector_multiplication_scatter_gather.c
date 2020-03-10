@@ -93,7 +93,7 @@ void main(int argc, char **argv)
     }
 
     gettimeofday(&startgather, 0);
-    MPI_Gather(&ctemp, M / numtasks, MPI_DOUBLE, &c, count, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(&ctemp, M / numtasks, MPI_DOUBLE, &c, M / numtasks, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     gettimeofday(&finishgather, 0);
 
     MPI_Barrier(MPI_COMM_WORLD);
