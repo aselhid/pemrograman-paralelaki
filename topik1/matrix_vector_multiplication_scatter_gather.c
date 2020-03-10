@@ -37,7 +37,7 @@ void validate_vector()
     valid = true;
     for (i = 0; i < N; i++)
     {
-        if (c[j] != N)
+        if (c[i] != N)
         {
             valid = false;
             break;
