@@ -100,7 +100,7 @@ main(int argc, char **argv)
         MPI_Recv(&offset, 1, MPI_INT, source, 1, MPI_COMM_WORLD, &status);
         MPI_Recv(&rows, 1, MPI_INT, source, 1, MPI_COMM_WORLD, &status);
         MPI_Recv(&a, rows * N, MPI_DOUBLE, source, 1, MPI_COMM_WORLD, &status);
-        MPI_Recv(&b, N * N, MPI_DOUBLE, source, 1, MPI_COMM_WORLD, &status);
+        MPI_Recv(&b, M, MPI_DOUBLE, source, 1, MPI_COMM_WORLD, &status);
 
         /* Matrix multiplication */
         for (k = 0; k < N; k++)
