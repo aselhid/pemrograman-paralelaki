@@ -88,8 +88,6 @@ void main(int argc, char **argv)
     MPI_Bcast(&b, N * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     gettimeofday(&finishbcast, 0);
 
-    MPI_Barrier(MPI_COMM_WORLD);
-
     sum = 0;
     for (i = 0; i < N / numtasks; i++)
     {
@@ -120,8 +118,6 @@ void main(int argc, char **argv)
     MPI_Reduce(&bcasttime, &avg_bcasttime, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&gathertime, &avg_gathertime, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    MPI_Finalize();
-
     if (taskid == 0)
     {
         avg_scattertime /= numtasks;
@@ -134,4 +130,6 @@ void main(int argc, char **argv)
         printf("%.6f,%.6f,", avg_scattertime + avg_bcasttime, avg_gathertime);
         printf("\n");
     }
+
+    MPI_Finalize();
 }
