@@ -13,15 +13,29 @@ static timestamp_t get_timestamp()
     return now.tv_usec + (timestamp_t)now.tv_sec * 1000000;
 }
 
-double parallel_calculate_y(double coefs[], int length, double x)
+int is_double_almost_equal(double a, double b)
 {
+    return fabs(a - b) < .0001;
+}
+
+double riemann(double coefs[], int coefs_length, double a, double b, int n)
+{
+    double subinterval = (b - a) / n;
     double result = 0.0;
-#pragma omp parallel for reduction(+ \
-                                   : result)
-    for (int i = 0; i < length; ++i)
+
+    for (int i = 0; i < n; ++i)
     {
-        result += pow(x, i) * coefs[i];
+        double x = subinterval * i;
+        double y = 0.0;
+
+        for (int j = 0; j < coefs_length; ++j)
+        {
+            y += pow(x, j) * coefs[j];
+        }
+
+        result += subinterval * y;
     }
+
     return result;
 }
 
@@ -29,51 +43,33 @@ double parallel_riemann(double coefs[], int coefs_length, double a, double b, in
 {
     double subinterval = (b - a) / n;
     double result = 0.0;
-#pragma omp parallel for reduction(+ \
-                                   : result)
+
+#pragma omp parallel for collapse(2) reduction(+ \
+                                               : result)
     for (int i = 0; i < n; ++i)
     {
-        double x = subinterval * i;
-        result += subinterval * parallel_calculate_y(coefs, coefs_length, x);
+        for (int j = 0; j < coefs_length; ++j)
+        {
+            double x = subinterval * i;
+            result += subinterval * (coefs[j] * pow(x, j));
+        }
     }
-    return result;
-}
 
-double calculate_y(double coefs[], int length, double x)
-{
-    double result = 0.0;
-    for (int i = 0; i < length; ++i)
-    {
-        result += pow(x, i) * coefs[i];
-    }
-    return result;
-}
-
-double riemann(double coefs[], int coefs_length, double a, double b, int n)
-{
-    double subinterval = (b - a) / n;
-    double result = 0.0;
-    for (int i = 0; i < n; ++i)
-    {
-        double x = subinterval * i;
-        result += subinterval * calculate_y(coefs, coefs_length, x);
-    }
     return result;
 }
 
 int main()
 {
-    int MAX_POLYNOMIAL_DEGREE = 1000000;
+    int MAX_POLYNOMIAL_DEGREE = 99999 + 1;
     double coefs[MAX_POLYNOMIAL_DEGREE];
+    int partition = 1000;
 
     for (int i = 0; i < MAX_POLYNOMIAL_DEGREE; ++i)
     {
         coefs[i] = rand();
     }
 
-    int partition = 100;
-
-    printf("%d\n", omp_get_max_threads());
+    riemann(coefs, MAX_POLYNOMIAL_DEGREE, 1, 2, partition);
 
     timestamp_t before_sequential = get_timestamp();
     double sequential_result = riemann(coefs, MAX_POLYNOMIAL_DEGREE, 1, 2, partition);
@@ -83,9 +79,9 @@ int main()
     double parallel_result = parallel_riemann(coefs, MAX_POLYNOMIAL_DEGREE, 1, 2, partition);
     timestamp_t after_parallel = get_timestamp();
 
-    printf("sequential: %llu ms\n", after_sequential - before_sequential);
-    printf("parallel: %llu ms\n", after_parallel - before_parallel);
-    printf(sequential_result == parallel_result ? "EQUAL\n" : "NOT\n");
+    printf("1,%llu\n", after_sequential - before_sequential);
+    printf("%d,%llu\n", omp_get_max_threads(), after_parallel - before_parallel);
+    // printf(is_double_almost_equal(sequential_result, parallel_result) ? "EQUAL\n" : "NOT\n");
 
     return 0;
 }
